@@ -1,0 +1,121 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 40px;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.description {
+  color: #666;
+  margin-bottom: 32px;
+  line-height: 1.6;
+}
+
+.currentPlan {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+  padding: 16px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+}
+
+.features {
+  margin-bottom: 32px;
+}
+
+.featuresTitle {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.featureList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.feature {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.checkmark {
+  color: #0070f3;
+  font-weight: bold;
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.feature strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.feature p {
+  color: #666;
+  font-size: 14px;
+  margin: 0;
+}
+
+.upgradeButton {
+  width: 100%;
+  padding: 16px 24px;
+  background-color: #0070f3;
+  color: white;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  transition: background-color 0.2s;
+}
+
+.upgradeButton:hover {
+  background-color: #0051cc;
+}
+
+.backLink {
+  display: block;
+  text-align: center;
+  color: #0070f3;
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+
+.backLink:hover {
+  color: #0051cc;
+  text-decoration: underline;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-size: 18px;
+  color: #666;
+}

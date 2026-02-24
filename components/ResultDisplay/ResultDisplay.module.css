@@ -1,0 +1,85 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.blurred {
+  filter: blur(5px);
+  pointer-events: none;
+  user-select: none;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.copyButton {
+  padding: 6px 12px;
+  background-color: #0070f3;
+  color: white;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.copyButton:hover {
+  background-color: #0051cc;
+}
+
+.content {
+  color: #333;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  padding: 6px 12px;
+  background-color: #f0f7ff;
+  color: #0070f3;
+  border-radius: 16px;
+  font-size: 14px;
+}
+
+.strategyList {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.strategyList li {
+  padding-left: 24px;
+  position: relative;
+}
+
+.strategyList li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #0070f3;
+  font-weight: bold;
+  font-size: 20px;
+}

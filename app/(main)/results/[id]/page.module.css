@@ -1,0 +1,71 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background: white;
+  border-bottom: 1px solid #e5e5e5;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+}
+
+.backLink {
+  color: #0070f3;
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+
+.backLink:hover {
+  color: #0051cc;
+  text-decoration: underline;
+}
+
+.main {
+  flex: 1;
+  padding: 40px 20px;
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.upgradePrompt {
+  margin-top: 32px;
+  padding: 24px;
+  background-color: #fff3cd;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid #ffc107;
+}
+
+.upgradePrompt p {
+  margin-bottom: 16px;
+  color: #856404;
+  font-size: 16px;
+}
+
+.upgradeButton {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: #0070f3;
+  color: white;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.upgradeButton:hover {
+  background-color: #0051cc;
+}
