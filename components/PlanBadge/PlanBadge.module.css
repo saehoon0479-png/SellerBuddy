@@ -5,14 +5,44 @@
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
+  border: none;
+  cursor: default;
+}
+
+.clickable {
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s, border-color 0.2s;
+}
+
+.clickable:hover {
+  transform: translateY(-1px);
 }
 
 .free {
-  background-color: #e5e5e5;
-  color: #666;
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--muted);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.clickable.free:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
 .pro {
-  background-color: #0070f3;
-  color: white;
+  background-color: rgba(249, 115, 22, 0.2);
+  color: #F97316;
+  border: 1px solid rgba(249, 115, 22, 0.3);
+}
+
+.clickable.pro:hover {
+  background-color: rgba(249, 115, 22, 0.25);
+  border-color: rgba(249, 115, 22, 0.4);
+}
+
+.loading {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--muted);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: default;
 }

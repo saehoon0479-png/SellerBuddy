@@ -1,89 +1,81 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-import { createServiceClient } from '@/lib/supabase/service'
+import { createServerClient } from '@supabase/ssr'
 
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
   try {
-    // Read Authorization header
-    const authHeader = request.headers.get('authorization')
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    const token = authHeader.substring(7)
-
-    // Verify token using Supabase client
-    const supabase = createClient(
+    const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return request.cookies.getAll()
+          },
+          setAll(cookiesToSet: { name: string; value: string; options?: any }[]) {
+            // Cookies are set via response headers
+          },
+        },
+      }
     )
-    
+
     const {
       data: { user },
       error: userError,
-    } = await supabase.auth.getUser(token)
+    } = await supabase.auth.getUser()
 
     if (userError || !user) {
-      return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
+      console.log('[api/me] No user:', userError?.message || 'No user found')
+      const response = NextResponse.json(
+        { code: 'AUTH_REQUIRED', error: 'Unauthorized' },
+        { status: 401 }
+      )
+      response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
+      return response
     }
 
-    // Use service role client to query profiles
-    const serviceClient = createServiceClient()
-    const { data: profileData, error: profileError } = await serviceClient
-      .schema('public')
+    console.log('[api/me] User:', { id: user.id, email: user.email })
+
+    const { data: profileData, error: profileError } = await supabase
       .from('profiles')
       .select('user_id, email, plan, generations_used')
       .eq('user_id', user.id)
-      .maybeSingle()
+      .single()
 
-    // If profile doesn't exist, create it
-    if (!profileData && !profileError) {
-      const { data: newProfile, error: upsertError } = await serviceClient
-        .schema('public')
-        .from('profiles')
-        .upsert(
-          {
-            user_id: user.id,
-            email: user.email!,
-            plan: 'free',
-            generations_used: 0,
-          },
-          {
-            onConflict: 'user_id',
-          }
-        )
-        .select('user_id, email, plan, generations_used')
-        .single()
-
-      if (upsertError || !newProfile) {
-        return NextResponse.json(
-          { error: upsertError?.message || 'Failed to create profile' },
-          { status: 500 }
-        )
-      }
-
-      return NextResponse.json({ profile: newProfile })
-    }
-
-    if (profileError) {
-      return NextResponse.json(
-        { error: profileError.message },
-        { status: 500 }
+    if (profileError || !profileData) {
+      console.log('[api/me] Profile error or missing:', profileError?.message || 'No profile data')
+      const response = NextResponse.json(
+        {
+          user: { id: user.id, email: user.email },
+          plan: 'free',
+          profile_missing: true,
+        },
+        { status: 200 }
       )
+      response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
+      return response
     }
 
-    if (!profileData) {
-      return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
-    }
+    const plan = profileData.plan as 'free' | 'pro'
+    console.log('[api/me] Fetched plan:', plan)
 
-    return NextResponse.json({ profile: profileData })
+    const response = NextResponse.json({
+      user: { id: user.id, email: user.email },
+      plan: plan,
+      profile: profileData,
+    })
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
+    response.headers.set('Pragma', 'no-cache')
+    response.headers.set('Expires', '0')
+    return response
   } catch (error) {
-    console.error('Error in /api/me:', error)
-    return NextResponse.json(
+    console.error('[api/me] Error:', error)
+    const response = NextResponse.json(
       { error: error instanceof Error ? error.message : 'Internal server error' },
       { status: 500 }
     )
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
+    return response
   }
 }

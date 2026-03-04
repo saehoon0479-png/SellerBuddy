@@ -13,7 +13,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f5f5f5;
+  background-color: #07070a;
+  background-image: none;
   color: #333;
 }
 
@@ -33,4 +34,19 @@ input,
 textarea {
   font-family: inherit;
   outline: none;
+}
+
+:root {
+  --bg: #07070a;
+  --bg2: #0b0b10;
+  --card: rgba(255, 255, 255, 0.03);
+  --card2: rgba(255, 255, 255, 0.05);
+  --border: rgba(255, 255, 255, 0.10);
+  --muted: rgba(255, 255, 255, 0.70);
+  --muted2: rgba(255, 255, 255, 0.55);
+  --text: rgba(255, 255, 255, 0.92);
+  --brand-accent: #F97316;
+  --brand-accent2: #FB923C;
+  --danger: #EF4444;
+  --ok: #22C55E;
 }

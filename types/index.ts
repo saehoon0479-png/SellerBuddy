@@ -7,6 +7,7 @@ export interface Profile {
   generations_used: number
   created_at: string
   updated_at: string
+  last_reset_at?: string
 }
 
 export interface Generation {

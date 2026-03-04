@@ -1,14 +1,16 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import PlanBadge from '@/components/PlanBadge/PlanBadge'
-import { User } from '@/types'
+import { Profile } from '@/types'
 import styles from './page.module.css'
 
 export default function UpgradePage() {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
   const [checkingOut, setCheckingOut] = useState(false)
   const router = useRouter()
@@ -41,7 +43,7 @@ export default function UpgradePage() {
 
         const data = await response.json()
         if (data.profile) {
-          setUser(data.profile as User)
+          setUser(data.profile as Profile)
         }
       } catch (error) {
         console.error('Error loading profile:', error)
@@ -73,7 +75,7 @@ export default function UpgradePage() {
           if (response.ok) {
             const data = await response.json()
             if (data.profile) {
-              setUser(data.profile as User)
+              setUser(data.profile as Profile)
             }
           }
         }
@@ -107,34 +109,26 @@ export default function UpgradePage() {
       const data = await response.json()
 
       if (!response.ok) {
-        alert(data.error || '결제 링크 생성에 실패했습니다.')
+        alert(data.error || 'Failed to create checkout link.')
         setCheckingOut(false)
         return
       }
 
-      // Redirect to checkout URL
+      // Redirect to checkout URL immediately
       if (data.url) {
         window.location.href = data.url
       } else {
-        alert('결제 링크를 받을 수 없습니다.')
+        alert('Unable to retrieve checkout link.')
         setCheckingOut(false)
       }
     } catch (error) {
       console.error('Error creating checkout:', error)
-      alert('결제 링크 생성 중 오류가 발생했습니다.')
+      alert('An error occurred while creating the checkout link.')
       setCheckingOut(false)
     }
   }
 
-  if (loading) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.loading}>로딩 중...</div>
-      </div>
-    )
-  }
-
-  if (!user) {
+  if (loading || !user) {
     return null
   }
 
@@ -142,12 +136,16 @@ export default function UpgradePage() {
     return (
       <div className={styles.container}>
         <div className={styles.card}>
-          <h1 className={styles.title}>이미 PRO 플랜입니다</h1>
+          <div className={styles.brandHeader}>
+            <span className={styles.brandA}>Seller</span>
+            <span className={styles.brandB}>Buddy</span>
+          </div>
+          <h1 className={styles.title}>Already on Pro</h1>
           <p className={styles.description}>
-            현재 PRO 플랜을 사용 중입니다. 추가 기능이 필요하시면 문의해주세요.
+            You're currently on the Pro plan. Contact us if you need additional features.
           </p>
           <a href="/" className={styles.backLink}>
-            ← 홈으로 돌아가기
+            ← Back to app
           </a>
         </div>
       </div>
@@ -157,52 +155,56 @@ export default function UpgradePage() {
   return (
     <div className={styles.container}>
       <div className={styles.card}>
-        <h1 className={styles.title}>PRO로 업그레이드</h1>
+        <div className={styles.brandHeader}>
+          <span className={styles.brandA}>Seller</span>
+          <span className={styles.brandB}>Buddy</span>
+        </div>
+        <h1 className={styles.title}>Upgrade to Pro</h1>
         <p className={styles.description}>
-          PRO 플랜으로 업그레이드하여 더 많은 기능을 이용하세요.
+          Unlock more generations, more competitor analysis, and faster workflows.
         </p>
 
         <div className={styles.currentPlan}>
-          <span>현재 플랜:</span>
+          <span>Current plan:</span>
           <PlanBadge plan={user.plan} />
         </div>
 
         <div className={styles.features}>
-          <h2 className={styles.featuresTitle}>PRO 플랜 혜택</h2>
+          <h2 className={styles.featuresTitle}>Pro plan benefits</h2>
           <div className={styles.featureList}>
             <div className={styles.feature}>
               <span className={styles.checkmark}>✓</span>
               <div>
-                <strong>이미지 최대 3장 업로드</strong>
-                <p>FREE: 1장</p>
+                <strong>Upload up to 3 images</strong>
+                <p>FREE: 1 image</p>
               </div>
             </div>
             <div className={styles.feature}>
               <span className={styles.checkmark}>✓</span>
               <div>
-                <strong>경쟁 URL 최대 3개 분석</strong>
-                <p>FREE: 1개</p>
+                <strong>Analyze up to 3 competitors</strong>
+                <p>FREE: 1 competitor</p>
               </div>
             </div>
             <div className={styles.feature}>
               <span className={styles.checkmark}>✓</span>
               <div>
-                <strong>월 50회 생성</strong>
-                <p>FREE: 1회 (lifetime)</p>
+                <strong>Up to 50 generations / month</strong>
+                <p>FREE: 1 generation (lifetime)</p>
               </div>
             </div>
             <div className={styles.feature}>
               <span className={styles.checkmark}>✓</span>
               <div>
-                <strong>경쟁 분석 모드</strong>
-                <p>시장 포지셔닝 및 차별화 전략 분석</p>
+                <strong>Competitor positioning insights</strong>
+                <p>Market positioning and differentiation strategy analysis</p>
               </div>
             </div>
             <div className={styles.feature}>
               <span className={styles.checkmark}>✓</span>
               <div>
-                <strong>상세한 전략 분석</strong>
-                <p>USP, 포지셔닝, 가격 제안 등</p>
+                <strong>Advanced strategy recommendations</strong>
+                <p>USP, positioning, pricing suggestions, and more</p>
               </div>
             </div>
           </div>
@@ -213,11 +215,18 @@ export default function UpgradePage() {
           className={styles.upgradeButton}
           disabled={checkingOut}
         >
-          {checkingOut ? '처리 중...' : 'PRO로 업그레이드'}
+          {checkingOut ? (
+            <>
+              <span className={styles.spinner}></span>
+              Processing...
+            </>
+          ) : (
+            'Upgrade to Pro'
+          )}
         </button>
 
         <a href="/" className={styles.backLink}>
-          ← 홈으로 돌아가기
+          ← Back to app
         </a>
       </div>
     </div>

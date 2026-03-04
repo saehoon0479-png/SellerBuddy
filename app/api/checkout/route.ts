@@ -43,16 +43,15 @@ export async function POST(request: NextRequest) {
 
     if (!process.env.POLAR_PRODUCT_ID) {
       return NextResponse.json(
-        { error: 'POLAR_PRODUCT_ID is not configured' },
+        { error: 'POLAR_PRODUCT_ID missing' },
         { status: 500 }
       )
     }
 
     // Create checkout link
     const checkoutLink = await polar.checkouts.create({
-      productId: process.env.POLAR_PRODUCT_ID,
+      products: [process.env.POLAR_PRODUCT_ID],
       successUrl: process.env.POLAR_SUCCESS_URL || `${request.nextUrl.origin}/upgrade?success=true`,
-      cancelUrl: process.env.POLAR_CANCEL_URL || `${request.nextUrl.origin}/upgrade?canceled=true`,
       metadata: {
         user_id: user.id,
       },

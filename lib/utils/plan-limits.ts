@@ -1,6 +1,6 @@
-import { Plan, User } from '@/types'
+import { Plan, Profile } from '@/types'
 
-export function checkGenerationLimit(user: User): {
+export function checkGenerationLimit(user: Profile): {
   allowed: boolean
   reason?: string
 } {
@@ -43,7 +43,7 @@ export function getMaxCompetitorUrls(plan: Plan): number {
   return plan === 'pro' ? 3 : 1
 }
 
-export function shouldResetMonthlyUsage(user: User): boolean {
+export function shouldResetMonthlyUsage(user: Profile): boolean {
   if (user.plan !== 'pro') return false
 
   const now = new Date()

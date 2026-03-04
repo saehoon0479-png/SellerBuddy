@@ -1,11 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+export const dynamic = 'force-dynamic'
+
+import { useState, useEffect, Suspense } from 'react'
 import { createClient } from '@/lib/supabase/browser'
 import { useRouter, useSearchParams } from 'next/navigation'
 import styles from './page.module.css'
 
-export default function LoginPage() {
+function LoginForm() {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -17,7 +19,7 @@ export default function LoginPage() {
   useEffect(() => {
     const errorParam = searchParams.get('error')
     if (errorParam === 'callback') {
-      setError('인증에 실패했습니다. 다시 시도해주세요.')
+      setError('Authentication failed. Please try again.')
     }
   }, [searchParams])
 
@@ -46,35 +48,59 @@ export default function LoginPage() {
   return (
     <div className={styles.container}>
       <div className={styles.card}>
-        <h1 className={styles.title}>SellerBuddy 로그인</h1>
+        <div className={styles.brandHeader}>
+          <span className={styles.brandA}>Seller</span>
+          <span className={styles.brandB}>Buddy</span>
+        </div>
+        <h1 className={styles.title}>Log in</h1>
         {success ? (
           <div className={styles.successMessage}>
-            <p>이메일을 확인해주세요!</p>
+            <p>Check your inbox for a login link.</p>
             <p className={styles.successSubtext}>
-              {email}로 로그인 링크를 보냈습니다. 이메일의 링크를 클릭하여 로그인하세요.
+              We sent a login link to {email}. Click the link in your email to sign in.
             </p>
           </div>
         ) : (
           <form onSubmit={handleMagicLink} className={styles.form}>
             <div className={styles.inputGroup}>
-              <label htmlFor="email">이메일</label>
+              <label htmlFor="email">Email</label>
               <input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
+                placeholder="you@email.com"
                 required
                 disabled={loading}
               />
             </div>
+            <p className={styles.helperText}>We'll email you a magic link.</p>
             {error && <div className={styles.error}>{error}</div>}
             <button type="submit" disabled={loading} className={styles.button}>
-              {loading ? '전송 중...' : '매직 링크 보내기'}
+              {loading ? 'Sending...' : 'Send magic link'}
             </button>
+            <p className={styles.microcopy}>No password needed.</p>
           </form>
         )}
       </div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className={styles.container}>
+        <div className={styles.card}>
+          <div className={styles.brandHeader}>
+            <span className={styles.brandA}>Seller</span>
+            <span className={styles.brandB}>Buddy</span>
+          </div>
+          <h1 className={styles.title}>Log in</h1>
+        </div>
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   )
 }
